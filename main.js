@@ -48,7 +48,8 @@ function taskLi(task){
  
 
 function handleCheck(){
-
+    //ponemos la ul en vacío para que no se nos repitan las listas
+    taskList.innerHTML = "";
     //Pintar en html lista de tasks
     for (let i = 0; i < tasks.length; i++){
         const checkValue = tasks[i].completed;
@@ -62,7 +63,7 @@ handleCheck();
 
 
 //función que cambie el tasks.checked completed/not completed 
-function handleClick(event){
+function handleClick2(event){
     const taskID = event.target.id;
     const taskIndex = tasks.findIndex(task => task.id === parseInt(taskID));
     tasks[taskIndex].completed = !tasks[taskIndex].completed;
@@ -74,13 +75,23 @@ function handleClick(event){
     taskLiElement.classList.toggle('tachado');
 };
 
+function handleClick(event){
+    const taskID = event.target.id;
+    const taskIndex = tasks.findIndex(task => task.id === parseInt(taskID));
+    tasks[taskIndex].completed = !tasks[taskIndex].completed;
+    console.log(tasks[taskIndex].completed);
+    //añadimos aquí a handleCheck, estabamos llamando a la función taskLi y no nos funcionaba porque esa función es llamada en handleCheck y hay que llamar a handleCheck.
+    handleCheck();
+};
+//este for es el que nos molestaba, no había que usarlo y simplemente llamar sobre el ul al eventListener y llamar a handleClick
 //obtenemos el listado con todos los cuadraditos del check
-const clickCheck = document.querySelectorAll(".js-checkbox");
-//crear addEventListener sobre los checkbox
+// const clickCheck = document.querySelectorAll(".js-checkbox");
 //bucle array checkboxes
-for(const eachCheckBox of clickCheck){
-    eachCheckBox.addEventListener('click', handleClick)
-};   
+// for(const eachCheckBox of clickCheck){
+//     eachCheckBox.addEventListener('click', handleClick)
+// };   
+//crear addEventListener sobre los checkbox
+taskList.addEventListener('click', handleClick);
 
-
+// si ves hay dos funciones, una handleClick y otra handleClick2 son dos maneras distintas de resolver lo mismo, nos quedamos con la que quieras, la que llamemos en la línea 94 es la que se ejecuta, la otra no está llamada. 
 
