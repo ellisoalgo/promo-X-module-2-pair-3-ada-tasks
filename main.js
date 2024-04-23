@@ -48,6 +48,7 @@ function taskLi(task){
  
 
 function handleCheck(){
+
     //Pintar en html lista de tasks
     for (let i = 0; i < tasks.length; i++){
         const checkValue = tasks[i].completed;
@@ -59,42 +60,27 @@ function handleCheck(){
 
 handleCheck();
 
-const clickCheck = document.querySelectorAll(".js-checkbox");
 
-//bucle array checkboxes
-
-//evento tiene que obtener el ID
-//findindex - buscar ID dentro de array
-//acceder a la posicion y cambiar propiedad completed
-
-
-//ccrear función que cambie el tasks.checked completed/not completed 
+//función que cambie el tasks.checked completed/not completed 
 function handleClick(event){
     const taskID = event.target.id;
     const taskIndex = tasks.findIndex(task => task.id === parseInt(taskID));
     tasks[taskIndex].completed = !tasks[taskIndex].completed;
     console.log(tasks[taskIndex].completed);
-
-    let classTachado = "";
-    let checked = "";
-    if (tasks[taskIndex].completed === true){
-        classTachado = 'tachado';
-        checked = "checked";
-      } else{
-          classTachado = "";
-          checked = "";
-      };
-      return `<li class=${classTachado}>
-      <input type="checkbox" name="" id="${tasks.id}" value="${tasks.completed}" ${checked} class="js-checkbox"> ${tasks.name}
-      </li>`
-
+    
+    //el target hace referencia al elemento que ha sido pulsado, en este caso un input check que está dentro de cada li. por eso event.target obtengo ese check y event.target.parentElement es la manera de acceder a su padre que es el li.
+    const taskLiElement = event.target.parentElement;
+    //hacemos el toggle con la clase tachado para que se la ponga y se la quite al li.
+    taskLiElement.classList.toggle('tachado');
 };
 
+//obtenemos el listado con todos los cuadraditos del check
+const clickCheck = document.querySelectorAll(".js-checkbox");
+//crear addEventListener sobre los checkbox
+//bucle array checkboxes
 for(const eachCheckBox of clickCheck){
     eachCheckBox.addEventListener('click', handleClick)
-};
+};   
 
-
-//crear addEventListener sobre los checkbox
 
 
