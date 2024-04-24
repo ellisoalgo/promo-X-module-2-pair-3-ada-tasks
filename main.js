@@ -75,14 +75,15 @@ function handleClick2(event){
     taskLiElement.classList.toggle('tachado');
 };
 
-function handleClick(event){
-    const taskID = event.target.id;
-    const taskIndex = tasks.findIndex(task => task.id === parseInt(taskID));
-    tasks[taskIndex].completed = !tasks[taskIndex].completed;
-    console.log(tasks[taskIndex].completed);
-    //añadimos aquí a handleCheck, estabamos llamando a la función taskLi y no nos funcionaba porque esa función es llamada en handleCheck y hay que llamar a handleCheck.
-    handleCheck();
-};
+// function handleClick(event){
+//     const taskID = event.target.id;
+//     const taskIndex = tasks.findIndex(task => task.id === parseInt(taskID));
+//     tasks[taskIndex].completed = !tasks[taskIndex].completed;
+//     console.log(tasks[taskIndex].completed);
+//     //añadimos aquí a handleCheck, estabamos llamando a la función taskLi y no nos funcionaba porque esa función es llamada en handleCheck y hay que llamar a handleCheck.
+//     handleCheck();
+// };
+
 //este for es el que nos molestaba, no había que usarlo y simplemente llamar sobre el ul al eventListener y llamar a handleClick
 //obtenemos el listado con todos los cuadraditos del check
 // const clickCheck = document.querySelectorAll(".js-checkbox");
@@ -91,7 +92,37 @@ function handleClick(event){
 //     eachCheckBox.addEventListener('click', handleClick)
 // };   
 //crear addEventListener sobre los checkbox
-taskList.addEventListener('click', handleClick);
+taskList.addEventListener('click', handleClick2);
 
 // si ves hay dos funciones, una handleClick y otra handleClick2 son dos maneras distintas de resolver lo mismo, nos quedamos con la que quieras, la que llamemos en la línea 94 es la que se ejecuta, la otra no está llamada. 
 
+/* 
+    Filtrar tareas:
+    1.- Evento sobre botón buscar
+    2.- Función handle:
+        1) obtener valor input
+        2) filter de listado de tareas
+        3) volver a pintar tareas filtradas
+*/
+
+const input = document.querySelector(".js-text-task-filter");
+const btnFilter = document.querySelector(".js-btn-filter");
+
+
+function handleFilter(event){
+    event.preventDefault();
+    const filterTask = input.value;
+    taskList.innerHTML = "";
+    
+    function searchResult (arr, value){
+        return arr.filter((item) => item.name.toLowerCase().includes(value.toLowerCase()));
+    }
+    const result = searchResult(tasks, filterTask);
+    console.log(result);
+
+    for (const eachResult of result){
+       taskList.innerHTML += taskLi(eachResult);
+    };
+};
+
+btnFilter.addEventListener('click', handleFilter);
