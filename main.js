@@ -4,28 +4,26 @@ const taskList = document.querySelector(".js-task-list");
 
 
 //array donde irán las tareas
-const tasks = [
-    { 
-        name: 'Recoger setas en el campo', 
-        completed: true, 
-        id: 1,
-    },
-    { 
-        name: 'Comprar pilas', 
-        completed: true,
-        id: 2,
-    },
-    { 
-        name: 'Poner una lavadora de blancos', 
-        completed: true,
-        id: 3,
-    },
-    {
-        name: 'Aprender cómo se realizan las peticiones al servidor en JavaScript',
-        completed: false,
-        id: 4,
-    },
-  ];
+let tasks = [];
+
+//Guardar una versión de la API en nuestro usuario de github.
+const GITHUB_USER = 'luciadelafuente';
+const SERVER_URL = `https://dev.adalab.es/api/todo/${GITHUB_USER}`;
+
+//llamada al servidor de la API.
+fetch(SERVER_URL)
+.then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
+    tasks = data.results;
+    handleCheck();
+    console.log(taskList);
+    console.log(tasks);
+    console.log(data);
+  });
+
+//Guarda la respuesta obtenida enla variable para el listado de tareas: `tasks`
 
 //event que dice si el check es === true -> añadir clase .add, si check es === false -> .remove clase 
 
@@ -45,8 +43,6 @@ function taskLi(task){
     </li>`
   };
 
- 
-
 function handleCheck(){
     //ponemos la ul en vacío para que no se nos repitan las listas
     taskList.innerHTML = "";
@@ -56,11 +52,8 @@ function handleCheck(){
         console.log(checkValue);
         taskList.innerHTML += taskLi(tasks[i]); 
     };
+    counter();
 };
-
-
-handleCheck();
-
 
 //función que cambie el tasks.checked completed/not completed 
 function handleClick2(event){
@@ -126,3 +119,28 @@ function handleFilter(event){
 };
 
 btnFilter.addEventListener('click', handleFilter);
+
+// let counterTasks = 0;
+// let counterCompletedTasks = 0;
+// let counterNotCompletedTasks = 0;
+const div = document.querySelector('.div');
+
+function counter(){
+    let counterTasks = tasks.length;
+    const completedTasks = tasks.filter((completed) => completed === true);
+    let counterCompletedTasks = completedTasks.length;
+    const notCompletedTasks = tasks.filter((completed) => completed === false);
+    let counterNotCompletedTasks = notCompletedTasks.length;
+    const counterResult = document.createElement('p');
+    div.appendChild(counterResult);
+    const counterText = document.createTextNode(`Tienes ${counterTasks} tareas. ${counterCompletedTasks} completadas y ${counterNotCompletedTasks} por realizar.`);
+    counterResult.appendChild(counterText);
+    console.log(counterTasks);
+    console.log(counterCompletedTasks);
+    console.log(counterNotCompletedTasks);
+};
+
+
+
+
+
