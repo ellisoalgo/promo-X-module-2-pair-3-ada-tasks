@@ -11,17 +11,31 @@ const GITHUB_USER = 'luciadelafuente';
 const SERVER_URL = `https://dev.adalab.es/api/todo/${GITHUB_USER}`;
 
 //llamada al servidor de la API.
-fetch(SERVER_URL)
-.then(function (response) {
+localStorage.setItem("tasks");
+const tasksLocalStorage = JSON.parse(localStorage.getItem("tasks"));
+if (tasksLocalStorage !== null) {
+    // si (existe el listado de tareas en Local Storage)
+    // pinta la lista de tareas almacenadas en tasksLocalStorage
+    
+    tasksLocalStorage();
+  } else {
+    //sino existe el listado de tareas en el local storage
+    // pide los datos al servidor
+    fetch(SERVER_URL)
+    .then(function (response) {
     return response.json();
-  })
-  .then(function (data) {
+    })
+    .then(function (data) {
     tasks = data.results;
     handleCheck();
     console.log(taskList);
     console.log(tasks);
     console.log(data);
-  });
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+  };
 
 //Guarda la respuesta obtenida enla variable para el listado de tareas: `tasks`
 
@@ -42,6 +56,7 @@ function taskLi(task){
     <input type="checkbox" name="" id="${task.id}" value="${task.completed}" ${checked} class="js-checkbox"> ${task.name}
     </li>`
   };
+
 
 function handleCheck(){
     //ponemos la ul en vacío para que no se nos repitan las listas
@@ -66,6 +81,8 @@ function handleClick2(event){
     const taskLiElement = event.target.parentElement;
     //hacemos el toggle con la clase tachado para que se la ponga y se la quite al li.
     taskLiElement.classList.toggle('tachado');
+    counterText.innerHTML  = '';
+    counter();
 };
 
 // function handleClick(event){
@@ -125,22 +142,43 @@ btnFilter.addEventListener('click', handleFilter);
 // let counterNotCompletedTasks = 0;
 const div = document.querySelector('.div');
 
+const counterText = document.querySelector(".counter");
+
 function counter(){
     let counterTasks = tasks.length;
-    const completedTasks = tasks.filter((completed) => completed === true);
+    const completedTasks = tasks.filter((tasks) => tasks.completed === true);
     let counterCompletedTasks = completedTasks.length;
-    const notCompletedTasks = tasks.filter((completed) => completed === false);
+    const notCompletedTasks = tasks.filter((tasks) => tasks.completed === false);
     let counterNotCompletedTasks = notCompletedTasks.length;
-    const counterResult = document.createElement('p');
-    div.appendChild(counterResult);
-    const counterText = document.createTextNode(`Tienes ${counterTasks} tareas. ${counterCompletedTasks} completadas y ${counterNotCompletedTasks} por realizar.`);
-    counterResult.appendChild(counterText);
+    counterText.innerHTML = `Tienes ${counterTasks} tareas. ${counterCompletedTasks} completadas y ${counterNotCompletedTasks} por realizar.`;
     console.log(counterTasks);
     console.log(counterCompletedTasks);
     console.log(counterNotCompletedTasks);
 };
 
+const btnAdd = document.querySelector(".js-btn-add");
+const inputTarea = document.querySelector(".js-text-task-add");
 
+//añadir nueva tarea
+const handleNewTask = (event) => {
+    event.preventDefault();
+    // 1. Recoge el nombre de la tarea
+    const valueInput = inputTarea.value;
+    // 2. Crea un objeto para la nueva tarea
+    const newTask = {
+      name: `${valueInput}`, // sustituye este string vacío por el nombre de la tarea nueva
+      completed: false,
+      id: tasks[tasks.length-1].id+1,
+    };   
+  
+    // 3. Añade la nueva tarea al array de tareas
+    tasks.push(newTask);
+  
+    // 4. Vuelve a pintar las tareas
+    handleCheck();
+};
+
+btnAdd.addEventListener('click', handleNewTask);
 
 
 
